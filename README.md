@@ -6,5 +6,5 @@ sample endpoints:
 `/todos` with HTTP `GET`
 `/todos/{todoId}` with HTTP `DELETE`
 
-<!-- image -->
 ![image](/src/assets/output.PNG)
+![image](/src/assets/console.PNG)
