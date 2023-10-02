@@ -9,10 +9,10 @@ export class CdkStarterStack extends cdk.Stack {
 
     const api = new apigateway.RestApi(this, 'api', {
       description: 'example api gateway',
-      deployOptions: {
-        stageName: 'dev',
-      },
-      // 👇 enable CORS
+      // deployOptions: {
+      //   stageName: 'dev',
+      // },
+      // enable CORS
       defaultCorsPreflightOptions: {
         allowHeaders: [
           'Content-Type',
@@ -26,36 +26,36 @@ export class CdkStarterStack extends cdk.Stack {
       },
     });
 
-    // 👇 create an Output for the API URL
+    //  create an Output for the API URL
     new cdk.CfnOutput(this, 'apiUrl', {value: api.url});
 
-    // 👇 define get todos function
+    // define get todos function
     const getTodosLambda = new lambda.Function(this, 'get-todos-lambda', {
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/get-todos')),
     });
 
-    // 👇 add a /todos resource
+    // add a /todos resource
     const todos = api.root.addResource('todos');
 
-    // 👇 integrate GET /todos with getTodosLambda
+    // integrate GET /todos with getTodosLambda
     todos.addMethod(
       'GET',
       new apigateway.LambdaIntegration(getTodosLambda, {proxy: true}),
     );
 
-    // 👇 define delete todo function
+    // define delete todo function
     const deleteTodoLambda = new lambda.Function(this, 'delete-todo-lambda', {
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/delete-todo')),
     });
 
-    // 👇 add a /todos/{todoId} resource
+    // add a /todos/{todoId} resource
     const todo = todos.addResource('{todoId}');
 
-    // 👇 integrate DELETE /todos/{todoId} with deleteTodosLambda
+    // integrate DELETE /todos/{todoId} with deleteTodosLambda
     todo.addMethod(
       'DELETE',
       new apigateway.LambdaIntegration(deleteTodoLambda),
